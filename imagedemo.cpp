@@ -294,8 +294,7 @@ int main()
 	   for each image you load.
 	*/
 
-	image1 = iLoadImage("images\\bird.png");
-	image2 = iLoadImage("images\\tree.png");
+	
 	image3 = iLoadImage("images\\Chessboard.png");
 
 	for (int i = 0; i < 200; i++)
