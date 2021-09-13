@@ -36,19 +36,22 @@ void iDraw()
 	iText(10, 10, "Press p for pause, r for resume, END for exit.");
 	iSetColor(255, 0, 0);
 
-	if (GetAsyncKeyState(VK_RIGHT))
+	//////////////////////////////////////////////////////////////
+    // FOR SNAKE MOVEMENT-Start
+	//////////////////////////////////////////////////////////////
+	if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D'))
 	{
 		d = 1;
 	}
-	else if (GetAsyncKeyState(VK_LEFT))
+	else if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState('A'))
 	{
 		d = 2;
 	}
-	else if (GetAsyncKeyState(VK_DOWN))
+	else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState('S') )
 	{
 		d = 3;
 	}
-	else if (GetAsyncKeyState(VK_UP))
+	else if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState('W'))
 	{
 		d = 4;
 	}
@@ -56,7 +59,8 @@ void iDraw()
 	{
 		d = 0;
 	}
-
+	
+	
 	switch (d)
 	{
 	case 0:
@@ -203,6 +207,9 @@ void iDraw()
 		x[i] = x[i - 1];
 		y[i] = y[i - 1];
 	}
+	//////////////////////////////////////////////////////////////
+    // FOR SNAKE MOVEMENT-End
+	//////////////////////////////////////////////////////////////
 }
 
 /*
@@ -287,7 +294,7 @@ int main()
 	//place your own initialization codes here.
 
 	iSetColor(255, 255, 255);
-	iInitialize(640, 480, "Fatty Snake");
+	iInitialize(640, 480, "Gg Snake");
 
 	// loading images.
 	/* iLoadImage() will return an interger type id
