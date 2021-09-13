@@ -3,7 +3,8 @@
 int image1, image2, image3;
 int snake_width = 23, snake_height = 21, snake_position_x = 225, snake_position_y = 224;
 int x[200], y[200], d = 1, length = 100, dir = 1, p_d = 0;
-int snake_speed = 3;
+int snake_speed = 3, stop_game = 0;
+int chk = 700;
 
 /*
 function iDraw() is called again and again by the system.
@@ -25,20 +26,37 @@ void iDraw()
 	iSetColor(38, 52, 69);
 	iFilledRectangle(0, 0, 640, 480);
 	iShowImage(125, 70, 400, 350, image3);
-	/*iShowImage(0, 20, 200, 200, image2);
-	iRotate(pic_x,pic_y,45); /*angle in degree*/
-
-	/*iShowImage(pic_x, pic_y, 100, 100, image1);*/
 	iSetColor(255, 255, 255);
 	iRectangle(125, 70, 400, 350);
-
 	iSetColor(255, 255, 255);
 	iText(10, 10, "Press p for pause, r for resume, END for exit.");
 	iSetColor(255, 0, 0);
 
 	//////////////////////////////////////////////////////////////
-    // FOR SNAKE MOVEMENT-Start
+	// FOR SNAKE MOVEMENT-Start
 	//////////////////////////////////////////////////////////////
+	for (int i = 0; i < length; i++)
+		{
+			iFilledRectangle(x[i], y[i], snake_width, snake_height);
+		}
+	if (stop_game == 0)
+	{
+		
+		for (int i = 199; i > 0; i--)
+		{
+			x[i] = x[i - 1];
+			y[i] = y[i - 1];
+		}
+	}
+
+	//////////////////////////////////////////////////////////////
+	// FOR SNAKE MOVEMENT-End
+	//////////////////////////////////////////////////////////////
+}
+
+void snake_movement()
+{
+
 	if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D'))
 	{
 		d = 1;
@@ -47,7 +65,7 @@ void iDraw()
 	{
 		d = 2;
 	}
-	else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState('S') )
+	else if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState('S'))
 	{
 		d = 3;
 	}
@@ -59,8 +77,7 @@ void iDraw()
 	{
 		d = 0;
 	}
-	
-	
+
 	switch (d)
 	{
 	case 0:
@@ -197,19 +214,16 @@ void iDraw()
 
 		break;
 	}
-
-	for (int i = 0; i < length; i++)
+	for (int i = 2; i < length; i++)
 	{
-		iFilledRectangle(x[i], y[i], snake_width, snake_height);
+		if (x[0] == x[i] && y[0] == y[i])
+		{
+			chk = i;
+			iPauseTimer(0);
+			stop_game = 1;
+			break;
+		}
 	}
-	for (int i = 199; i > 0; i--)
-	{
-		x[i] = x[i - 1];
-		y[i] = y[i - 1];
-	}
-	//////////////////////////////////////////////////////////////
-    // FOR SNAKE MOVEMENT-End
-	//////////////////////////////////////////////////////////////
 }
 
 /*
@@ -292,6 +306,7 @@ void iSpecialKeyboard(unsigned char key)
 int main()
 {
 	//place your own initialization codes here.
+	iSetTimer(1, snake_movement);
 
 	iSetColor(255, 255, 255);
 	iInitialize(640, 480, "Gg Snake");
@@ -312,6 +327,7 @@ int main()
 	}
 	x[0] = 200;
 	y[0] = 200;
+
 	iStart(); // it will start drawing
 
 	return 0;
