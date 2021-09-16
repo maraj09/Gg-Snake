@@ -1,10 +1,12 @@
 #include "iGraphics.h"
 
 int image1, image2, image3;
-int snake_width = 23, snake_height = 21, snake_position_x = 225, snake_position_y = 224;
-int x[200], y[200], d = 1, length = 100, dir = 1, p_d = 0;
+int snake_width = 23, snake_height = 22;
+int x[1000], y[1000], d = 1, length = 10, dir = 1, p_d = 0;
 int snake_speed = 3, stop_game = 0;
 int chk = 700;
+int rx = 196, ry = 245, f = 1;
+int gg[3];
 
 /*
 function iDraw() is called again and again by the system.
@@ -35,28 +37,6 @@ void iDraw()
 	//////////////////////////////////////////////////////////////
 	// FOR SNAKE MOVEMENT-Start
 	//////////////////////////////////////////////////////////////
-	for (int i = 0; i < length; i++)
-		{
-			iFilledRectangle(x[i], y[i], snake_width, snake_height);
-		}
-	if (stop_game == 0)
-	{
-		
-		for (int i = 199; i > 0; i--)
-		{
-			x[i] = x[i - 1];
-			y[i] = y[i - 1];
-		}
-	}
-
-	//////////////////////////////////////////////////////////////
-	// FOR SNAKE MOVEMENT-End
-	//////////////////////////////////////////////////////////////
-}
-
-void snake_movement()
-{
-
 	if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D'))
 	{
 		d = 1;
@@ -77,7 +57,49 @@ void snake_movement()
 	{
 		d = 0;
 	}
+	for (int i = 0; i < length; i++)
+	{
+		iFilledRectangle(x[i], y[i], snake_width, snake_height);
+	}
 
+	if (stop_game == 0)
+	{
+
+		for (int i = 199; i > 0; i--)
+		{
+			x[i] = x[i - 1];
+			y[i] = y[i - 1];
+		}
+	}
+
+	//////////////////////////////////////////////////////////////
+	// FOR SNAKE MOVEMENT-End
+	//////////////////////////////////////////////////////////////
+	if (x[0] > rx - 23  &&  x[0] < rx + 23 && y[0] > ry-22 && y[0] < ry+22 )
+	{
+	
+		length += 10;
+		f = f + 1;
+		printf("gg");
+		//make food
+
+		rx = (rand() % (500 - 150 + 1)) + 125;
+		ry = (rand() % (400 - 100 + 1)) + 70;
+
+	}
+	iFilledRectangle(rx, ry, 23, 22);
+	// iFilledRectangle(50,50,1,1);
+	// iGetPixelColor(50,50 , gg);
+	// int c_c[] = {55, 0, 0};
+	// if(memcmp(gg, c_c, sizeof(c_c)) == 0 ){
+	// 	printf("gg");
+	// }else{
+	// 	printf("sddd");
+	// }
+}
+
+void snake_movement()
+{
 	switch (d)
 	{
 	case 0:
@@ -306,7 +328,7 @@ void iSpecialKeyboard(unsigned char key)
 int main()
 {
 	//place your own initialization codes here.
-	iSetTimer(1, snake_movement);
+	iSetTimer(15, snake_movement);
 
 	iSetColor(255, 255, 255);
 	iInitialize(640, 480, "Gg Snake");
@@ -320,13 +342,17 @@ int main()
 	image2 = iLoadImage("images\\tree.png");
 	image3 = iLoadImage("images\\Chessboard.png");
 
-	for (int i = 0; i < 200; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 		x[i] = 0;
 		y[i] = 0;
 	}
-	x[0] = 200;
-	y[0] = 200;
+	for (int i = 0; i < 3; i++)
+	{
+		gg[i] = 0;
+	}
+	x[0] = 173;
+	y[0] = 223;
 
 	iStart(); // it will start drawing
 

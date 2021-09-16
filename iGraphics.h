@@ -10,6 +10,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+#include <iostream>
 #pragma comment(lib, "glut32.lib")
 #pragma comment(lib, "glaux.lib")
 //#pragma comment(lib, "legacy_stdio_definitions.lib")
