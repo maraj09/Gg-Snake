@@ -1,9 +1,10 @@
 #include "iGraphics.h"
 
-int image1, image2, image3;
+int image2, background_img;
+int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail;
 int snake_width = 23, snake_height = 22;
 int x[1000], y[1000], d = 1, length = 10, dir = 1, p_d = 0;
-int snake_speed = 3, stop_game = 0;
+int snake_speed = 10, stop_game = 0;
 int chk = 700;
 int rx = 196, ry = 245, f = 1;
 int gg[3];
@@ -27,7 +28,7 @@ void iDraw()
 	*/
 	iSetColor(38, 52, 69);
 	iFilledRectangle(0, 0, 640, 480);
-	iShowImage(125, 70, 400, 350, image3);
+	iShowImage(125, 70, 400, 350, background_img);
 	iSetColor(255, 255, 255);
 	iRectangle(125, 70, 400, 350);
 	iSetColor(255, 255, 255);
@@ -59,13 +60,47 @@ void iDraw()
 	}
 	for (int i = 0; i < length; i++)
 	{
-		iFilledRectangle(x[i], y[i], snake_width, snake_height);
+		if (i > 0)
+		{
+
+			if (y[i - 1] != y[i])
+			{
+				iShowImage(x[i], y[i], snake_height, snake_width, snake_body_y);
+			}
+			else if (x[i - 1] != x[i])
+			{
+				iShowImage(x[i], y[i], snake_width, snake_height, snake_body_x);
+			}
+			else if (y[i - 1] != y[i] && x[i - 1] != x[i])
+			{
+				iShowImage(x[i], y[i], snake_width, snake_height, snake_tail);
+			}
+		}
+		else
+		{
+			if (dir == 1)
+			{
+				iShowImage(x[i] + 7, y[i] - 5, snake_width, snake_height + 10, snake_head_right);
+			}
+			else if (dir == 2)
+			{
+				iShowImage(x[i] - 7, y[i] - 5, snake_width, snake_height + 10, snake_head_left);
+			}
+			else if (dir == 3)
+			{
+				iShowImage(x[i] - 5, y[i] - 7, snake_width + 10, snake_height, snake_head_bottom);
+			}
+			else if (dir == 4)
+			{
+				iShowImage(x[i] - 5, y[i] + 7, snake_width + 10, snake_height, snake_head_top);
+			}
+		}
 	}
 
 	if (stop_game == 0)
 	{
 
-		for (int i = 199; i > 0; i--)
+		for (int i = 999; i > 0; i--)
 		{
 			x[i] = x[i - 1];
 			y[i] = y[i - 1];
@@ -75,9 +110,9 @@ void iDraw()
 	//////////////////////////////////////////////////////////////
 	// FOR SNAKE MOVEMENT-End
 	//////////////////////////////////////////////////////////////
-	if (x[0] > rx - 23  &&  x[0] < rx + 23 && y[0] > ry-22 && y[0] < ry+22 )
+	if (x[0] > rx - 23 && x[0] < rx + 23 && y[0] > ry - 22 && y[0] < ry + 22)
 	{
-	
+
 		length += 10;
 		f = f + 1;
 		printf("gg");
@@ -85,7 +120,6 @@ void iDraw()
 
 		rx = (rand() % (500 - 150 + 1)) + 125;
 		ry = (rand() % (400 - 100 + 1)) + 70;
-
 	}
 	iFilledRectangle(rx, ry, 23, 22);
 	// iFilledRectangle(50,50,1,1);
@@ -328,7 +362,7 @@ void iSpecialKeyboard(unsigned char key)
 int main()
 {
 	//place your own initialization codes here.
-	iSetTimer(15, snake_movement);
+	iSetTimer(50, snake_movement);
 
 	iSetColor(255, 255, 255);
 	iInitialize(640, 480, "Gg Snake");
@@ -338,9 +372,15 @@ int main()
 	   for each image you load.
 	*/
 
-	image1 = iLoadImage("images\\bird.png");
+	snake_head_bottom = iLoadImage("images\\head_bot.png");
+	snake_head_top = iLoadImage("images\\head_top.png");
+	snake_head_left = iLoadImage("images\\head_left.png");
+	snake_head_right = iLoadImage("images\\head_right.png");
+	snake_body_x = iLoadImage("images\\body_x.png");
+	snake_body_y = iLoadImage("images\\body_y.png");
+	snake_tail = iLoadImage("images\\tail.png");
 	image2 = iLoadImage("images\\tree.png");
-	image3 = iLoadImage("images\\Chessboard.png");
+	background_img = iLoadImage("images\\Chessboard.png");
 
 	for (int i = 0; i < 1000; i++)
 	{
