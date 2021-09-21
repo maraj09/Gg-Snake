@@ -1,36 +1,23 @@
 #include "iGraphics.h"
 
+int ground_width = 800, ground_height = 600, ground_width_start = 240, ground_height_start = 60, ground_width_end = ground_width + ground_width_start, ground_height_end = ground_height + ground_height_start;
 int image2, background_img;
-int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail;
-int snake_width = 23, snake_height = 22;
-int x[1000], y[1000], d = 1, length = 10, dir = 1, p_d = 0;
-int snake_speed = 10, stop_game = 0;
-int chk = 700;
-int rx = 196, ry = 245, f = 1;
+int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail, fruit;
+int snake_width = 20, snake_height = 20;
+int x[1000], y[1000], d = 1, length = 200, dir = 1, p_d = 0;
+int snake_speed = 12, stop_game = 0;
+int rx = 320, ry = 320, f = 1;
 int gg[3];
-
-/*
-function iDraw() is called again and again by the system.
-*/
 
 void iDraw()
 {
-	//place your drawing codes here
-
 	iClear();
 
-	/* iShowImage():
-	Here, first 2 parameters are the lower left
-	corner position of image you want to put.
-	3rd and 4th parameters are the widht and the height
-	of the image.
-	Last parameter is the id of the image you want to put.
-	*/
 	iSetColor(38, 52, 69);
-	iFilledRectangle(0, 0, 640, 480);
-	iShowImage(125, 70, 400, 350, background_img);
+	iFilledRectangle(0, 0, 1280, 720);
+	// iShowImage(ground_width_start, ground_width_start, ground_width, ground_height, background_img);
 	iSetColor(255, 255, 255);
-	iRectangle(125, 70, 400, 350);
+	iRectangle(ground_width_start, ground_height_start, ground_width, ground_height);
 	iSetColor(255, 255, 255);
 	iText(10, 10, "Press p for pause, r for resume, END for exit.");
 	iSetColor(255, 0, 0);
@@ -65,36 +52,49 @@ void iDraw()
 
 			if (y[i - 1] != y[i])
 			{
-				iShowImage(x[i], y[i], snake_height, snake_width, snake_body_y);
+				if (y[i - 1] > y[i])
+				{
+					iShowImage(x[i], y[i] - 5, snake_height, snake_width + 5, snake_body_y);
+				}
+				else
+				{
+
+					iShowImage(x[i], y[i], snake_height, snake_width + 5, snake_body_y);
+				}
 			}
 			else if (x[i - 1] != x[i])
 			{
-				iShowImage(x[i], y[i], snake_width, snake_height, snake_body_x);
-			}
-			else if (y[i - 1] != y[i] && x[i - 1] != x[i])
-			{
-				iShowImage(x[i], y[i], snake_width, snake_height, snake_tail);
+				if (x[i - 1] > x[i])
+				{
+					iShowImage(x[i] - 5, y[i], snake_width + 5, snake_height, snake_body_x);
+				}
+				else
+				{
+
+					iShowImage(x[i], y[i], snake_width + 5, snake_height, snake_body_x);
+				}
 			}
 		}
-		else
+		else if (i == 0)
 		{
 			if (dir == 1)
 			{
-				iShowImage(x[i] + 7, y[i] - 5, snake_width, snake_height + 10, snake_head_right);
+				iShowImage(x[i], y[i] - 5, snake_width, snake_height + 10, snake_head_right);
 			}
 			else if (dir == 2)
 			{
-				iShowImage(x[i] - 7, y[i] - 5, snake_width, snake_height + 10, snake_head_left);
+				iShowImage(x[i], y[i] - 5, snake_width, snake_height + 10, snake_head_left);
 			}
 			else if (dir == 3)
 			{
-				iShowImage(x[i] - 5, y[i] - 7, snake_width + 10, snake_height, snake_head_bottom);
+				iShowImage(x[i] - 5, y[i], snake_width + 10, snake_height, snake_head_bottom);
 			}
 			else if (dir == 4)
 			{
-				iShowImage(x[i] - 5, y[i] + 7, snake_width + 10, snake_height, snake_head_top);
+				iShowImage(x[i] - 5, y[i], snake_width + 10, snake_height, snake_head_top);
 			}
 		}
+		// iFilledRectangle(x[i], y[i], snake_width, snake_height);
 	}
 
 	if (stop_game == 0)
@@ -109,19 +109,24 @@ void iDraw()
 
 	//////////////////////////////////////////////////////////////
 	// FOR SNAKE MOVEMENT-End
+	/////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
-	if (x[0] > rx - 23 && x[0] < rx + 23 && y[0] > ry - 22 && y[0] < ry + 22)
+	// FOR Fruit-Start
+	//////////////////////////////////////////////////////////////
+	if (x[0] > rx - 20 && x[0] < rx + 20 && y[0] > ry - 20 && y[0] < ry + 20)
 	{
 
 		length += 10;
 		f = f + 1;
-		printf("gg");
-		//make food
-
-		rx = (rand() % (500 - 150 + 1)) + 125;
-		ry = (rand() % (400 - 100 + 1)) + 70;
+		PlaySound(TEXT("music//food.wav"), NULL, SND_ASYNC);
+		rx = (rand() % (ground_width_end - ground_width_start)) + ground_width_start;
+		ry = (rand() % (ground_height_end - ground_height_start)) + ground_height_start;
 	}
-	iFilledRectangle(rx, ry, 23, 22);
+	// iFilledRectangle(rx, ry, 23, 22);
+	iShowImage(rx, ry, 30, 30, fruit);
+	//////////////////////////////////////////////////////////////
+	// FOR Fruit-End
+	//////////////////////////////////////////////////////////////
 	// iFilledRectangle(50,50,1,1);
 	// iGetPixelColor(50,50 , gg);
 	// int c_c[] = {55, 0, 0};
@@ -139,9 +144,9 @@ void snake_movement()
 	case 0:
 		if (dir == 1)
 		{
-			if (x[0] >= 500)
+			if (x[0] + snake_width >= ground_width_end)
 			{
-				x[0] = 125;
+				x[0] = ground_width_start;
 			}
 			else
 			{
@@ -151,9 +156,9 @@ void snake_movement()
 		}
 		else if (dir == 2)
 		{
-			if (x[0] <= 125)
+			if (x[0] <= ground_width_start)
 			{
-				x[0] = 500;
+				x[0] = ground_width_end - snake_width;
 			}
 			else
 			{
@@ -163,9 +168,9 @@ void snake_movement()
 		}
 		else if (dir == 3)
 		{
-			if (y[0] <= 71)
+			if (y[0] <= ground_height_start)
 			{
-				y[0] = 398;
+				y[0] = ground_height_end - snake_height;
 			}
 			else
 			{
@@ -175,9 +180,9 @@ void snake_movement()
 		}
 		else if (dir == 4)
 		{
-			if (y[0] >= 398)
+			if (y[0] + snake_height >= ground_height_end)
 			{
-				y[0] = 71;
+				y[0] = ground_height_start;
 			}
 			else
 			{
@@ -193,9 +198,9 @@ void snake_movement()
 	case 1:
 		if (p_d != 2)
 		{
-			if (x[0] >= 500)
+			if (x[0] >= ground_width_end)
 			{
-				x[0] = 125;
+				x[0] = ground_width_start;
 			}
 			else
 			{
@@ -213,9 +218,9 @@ void snake_movement()
 	case 2:
 		if (p_d != 1)
 		{
-			if (x[0] <= 125)
+			if (x[0] <= ground_width_start)
 			{
-				x[0] = 500;
+				x[0] = ground_width_end;
 			}
 			else
 			{
@@ -232,9 +237,9 @@ void snake_movement()
 	case 3:
 		if (p_d != 4)
 		{
-			if (y[0] <= 71)
+			if (y[0] <= ground_height_start)
 			{
-				y[0] = 398;
+				y[0] = ground_height_end;
 			}
 			else
 			{
@@ -252,9 +257,9 @@ void snake_movement()
 	case 4:
 		if (p_d != 3)
 		{
-			if (y[0] >= 398)
+			if (y[0] >= ground_height_end)
 			{
-				y[0] = 71;
+				y[0] = ground_height_start;
 			}
 			else
 			{
@@ -274,7 +279,6 @@ void snake_movement()
 	{
 		if (x[0] == x[i] && y[0] == y[i])
 		{
-			chk = i;
 			iPauseTimer(0);
 			stop_game = 1;
 			break;
@@ -289,6 +293,7 @@ function iMouseMove() is called when the user presses and drags the mouse.
 void iMouseMove(int mx, int my)
 {
 	//place your codes here
+	printf("%d%d\n", mx, my);
 }
 
 /*
@@ -332,8 +337,9 @@ void iKeyboard(unsigned char key)
 	{
 		iResumeTimer(0);
 	}
-	if (key == 'w')
+	if (key == 'w' || key == 's' || key == 'a' || key == 'd')
 	{
+		PlaySound(TEXT("music//move.wav"), NULL, SND_ASYNC);
 	}
 
 	//place your codes for other keys here
@@ -355,6 +361,10 @@ void iSpecialKeyboard(unsigned char key)
 	{
 		exit(0);
 	}
+	if (key == GLUT_KEY_LEFT || key == GLUT_KEY_UP || key == GLUT_KEY_RIGHT || key == GLUT_KEY_DOWN)
+	{
+		PlaySound(TEXT("music//move.wav"), NULL, SND_ASYNC);
+	}
 
 	//place your codes for other keys here
 }
@@ -365,7 +375,7 @@ int main()
 	iSetTimer(50, snake_movement);
 
 	iSetColor(255, 255, 255);
-	iInitialize(640, 480, "Gg Snake");
+	iInitialize(1280, 720, "Gg Snake");
 
 	// loading images.
 	/* iLoadImage() will return an interger type id
@@ -379,7 +389,7 @@ int main()
 	snake_body_x = iLoadImage("images\\body_x.png");
 	snake_body_y = iLoadImage("images\\body_y.png");
 	snake_tail = iLoadImage("images\\tail.png");
-	image2 = iLoadImage("images\\tree.png");
+	fruit = iLoadImage("images\\apple1.png");
 	background_img = iLoadImage("images\\Chessboard.png");
 
 	for (int i = 0; i < 1000; i++)
@@ -391,8 +401,8 @@ int main()
 	{
 		gg[i] = 0;
 	}
-	x[0] = 173;
-	y[0] = 223;
+	x[0] = 300;
+	y[0] = 300;
 
 	iStart(); // it will start drawing
 

@@ -18,6 +18,7 @@
 #include <time.h>
 #include <math.h>
 #include <windows.h>
+#include <Mmsystem.h>
 #include "glaux.h"
 
 # define STB_IMAGE_IMPLEMENTATION
