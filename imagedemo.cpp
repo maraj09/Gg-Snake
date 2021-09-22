@@ -4,7 +4,7 @@ int ground_width = 800, ground_height = 600, ground_width_start = 240, ground_he
 int image2, background_img;
 int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail, fruit;
 int snake_width = 20, snake_height = 20;
-int x[1000], y[1000], d = 1, length = 200, dir = 1, p_d = 0;
+int x[1000], y[1000], d = 1, length = 10, dir = 1, p_d = 0;
 int snake_speed = 12, stop_game = 0;
 int rx = 320, ry = 320, f = 1;
 int gg[3];
@@ -58,7 +58,6 @@ void iDraw()
 				}
 				else
 				{
-
 					iShowImage(x[i], y[i], snake_height, snake_width + 5, snake_body_y);
 				}
 			}
@@ -70,7 +69,6 @@ void iDraw()
 				}
 				else
 				{
-
 					iShowImage(x[i], y[i], snake_width + 5, snake_height, snake_body_x);
 				}
 			}
@@ -168,7 +166,7 @@ void snake_movement()
 		}
 		else if (dir == 3)
 		{
-			if (y[0] <= ground_height_start)
+			if (y[0] <= ground_height_start + 10)
 			{
 				y[0] = ground_height_end - snake_height;
 			}
@@ -180,7 +178,7 @@ void snake_movement()
 		}
 		else if (dir == 4)
 		{
-			if (y[0] + snake_height >= ground_height_end)
+			if (y[0] + snake_height + 10 >= ground_height_end )
 			{
 				y[0] = ground_height_start;
 			}
@@ -198,7 +196,7 @@ void snake_movement()
 	case 1:
 		if (p_d != 2)
 		{
-			if (x[0] >= ground_width_end)
+			if (x[0] + snake_width + 10 >= ground_width_end)
 			{
 				x[0] = ground_width_start;
 			}
@@ -220,7 +218,7 @@ void snake_movement()
 		{
 			if (x[0] <= ground_width_start)
 			{
-				x[0] = ground_width_end;
+				x[0] = ground_width_end - snake_width;
 			}
 			else
 			{
@@ -237,9 +235,9 @@ void snake_movement()
 	case 3:
 		if (p_d != 4)
 		{
-			if (y[0] <= ground_height_start)
+			if (y[0] <= ground_height_start + 10)
 			{
-				y[0] = ground_height_end;
+				y[0] = ground_height_end - snake_height;
 			}
 			else
 			{
@@ -257,7 +255,7 @@ void snake_movement()
 	case 4:
 		if (p_d != 3)
 		{
-			if (y[0] >= ground_height_end)
+			if (y[0] + snake_height + 10 >= ground_height_end)
 			{
 				y[0] = ground_height_start;
 			}
@@ -372,7 +370,7 @@ void iSpecialKeyboard(unsigned char key)
 int main()
 {
 	//place your own initialization codes here.
-	iSetTimer(50, snake_movement);
+	iSetTimer(25, snake_movement);
 
 	iSetColor(255, 255, 255);
 	iInitialize(1280, 720, "Gg Snake");
