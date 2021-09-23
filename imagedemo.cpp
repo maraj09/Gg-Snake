@@ -1,7 +1,7 @@
 #include "iGraphics.h"
 
 int ground_width = 800, ground_height = 600, ground_width_start = 240, ground_height_start = 60, ground_width_end = ground_width + ground_width_start, ground_height_end = ground_height + ground_height_start;
-int image2, background_img;
+int image2, ground_img;
 int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail, fruit;
 int snake_width = 20, snake_height = 20;
 int x[1000], y[1000], d = 1, length = 10, dir = 1, p_d = 0;
@@ -13,9 +13,9 @@ void iDraw()
 {
 	iClear();
 
-	iSetColor(38, 52, 69);
+	iSetColor(30, 30, 30);
 	iFilledRectangle(0, 0, 1280, 720);
-	// iShowImage(ground_width_start, ground_width_start, ground_width, ground_height, background_img);
+	iShowImage(ground_width_start, ground_height_start, ground_width, ground_height, ground_img);
 	iSetColor(255, 255, 255);
 	iRectangle(ground_width_start, ground_height_start, ground_width, ground_height);
 	iSetColor(255, 255, 255);
@@ -362,6 +362,7 @@ void iSpecialKeyboard(unsigned char key)
 	if (key == GLUT_KEY_LEFT || key == GLUT_KEY_UP || key == GLUT_KEY_RIGHT || key == GLUT_KEY_DOWN)
 	{
 		PlaySound(TEXT("music//move.wav"), NULL, SND_ASYNC);
+		
 	}
 
 	//place your codes for other keys here
@@ -370,7 +371,7 @@ void iSpecialKeyboard(unsigned char key)
 int main()
 {
 	//place your own initialization codes here.
-	iSetTimer(25, snake_movement);
+	iSetTimer(50, snake_movement);
 
 	iSetColor(255, 255, 255);
 	iInitialize(1280, 720, "Gg Snake");
@@ -388,7 +389,7 @@ int main()
 	snake_body_y = iLoadImage("images\\body_y.png");
 	snake_tail = iLoadImage("images\\tail.png");
 	fruit = iLoadImage("images\\apple1.png");
-	background_img = iLoadImage("images\\Chessboard.png");
+	ground_img = iLoadImage("images\\board.png");
 
 	for (int i = 0; i < 1000; i++)
 	{
