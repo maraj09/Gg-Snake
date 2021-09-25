@@ -1,19 +1,19 @@
 #include "iGraphics.h"
 
 int ground_width = 800, ground_height = 600, ground_width_start = 240, ground_height_start = 60, ground_width_end = ground_width + ground_width_start, ground_height_end = ground_height + ground_height_start;
-int overlay, ground_img, side_logo, sound_on, sound_off, toogle_music = 1, reset_img;
+int ground_img, side_logo, sound_on, sound_off, toogle_music = 1, reset_img, toogle_pause = 0, pause_btn, play_btn, back_btn, exit_btn;
 int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail, fruit;
 int snake_width = 20, snake_height = 20;
 int x[2000], y[2000], d = 1, length = 50, dir = 1, p_d = 0;
 int snake_speed = 12, game_over = 0;
 int rx = 320, ry = 320, f = 0;
-char t_score[50];
-char score[5];
+char t_score[50], score[5];
+
 
 void iDraw()
 {
 
-	if (toogle_music == 1)
+	if (toogle_music == 1 && toogle_pause == 0)
 	{
 
 		mciSendString(TEXT("resume  mp3"), NULL, 0, NULL);
@@ -47,16 +47,28 @@ void iDraw()
 	{
 		iShowImage(75, 350, 50, 50, sound_off);
 	}
+	iText(75, 300, "Pause/Play", GLUT_BITMAP_9_BY_15);
+	if (toogle_pause == 0)
+	{
+		iShowImage(75, 230, 50, 50, pause_btn);
+	}else{
+		iShowImage(75, 230, 50, 50, play_btn);
+	}
+	iText(25, 175, "Return To Menu or End", GLUT_BITMAP_9_BY_15);
+	iShowImage(35, 100, 40, 40, back_btn);
+	iShowImage(125, 100, 50, 50, exit_btn);
 	//	Score Board
 	iSetColor(102, 0, 255);
-	iText(1100, 650, "ScoreBoard", GLUT_BITMAP_TIMES_ROMAN_24);
+	iText(1100, 550, "ScoreBoard", GLUT_BITMAP_TIMES_ROMAN_24);
 	iSetColor(255, 102, 0);
-	iText(1125, 610, "LEVEL 1", GLUT_BITMAP_HELVETICA_18);
-	iSetColor(51, 153, 0);
-	iText(1075, 550, "Your Current Score", GLUT_BITMAP_9_BY_15);
-	iSetColor(255, 0, 0);
+	iText(1125, 510, "LEVEL 1", GLUT_BITMAP_HELVETICA_18);
+	iSetColor(255, 255, 0);
+	iText(1075, 450, "Your Current Score", GLUT_BITMAP_9_BY_15);
 	sprintf(score, "%d", f);
-	iText(1150, 525, score, GLUT_BITMAP_9_BY_15);
+	iText(1150, 425, score, GLUT_BITMAP_9_BY_15);
+	iSetColor(0, 255, 0);
+	iText(1100, 350, "Highest Score", GLUT_BITMAP_9_BY_15);
+	iText(1150, 325, score, GLUT_BITMAP_9_BY_15);
 	//////////////////////////////////////////////////////////////
 	// FOR SNAKE MOVEMENT-Start
 	//////////////////////////////////////////////////////////////
@@ -129,7 +141,7 @@ void iDraw()
 		}
 	}
 
-	if (game_over == 0)
+	if (game_over == 0 && toogle_pause == 0)
 	{
 
 		for (int i = 999; i > 0; i--)
@@ -168,10 +180,16 @@ void iDraw()
 		iFilledRectangle(385, 300, 500, 300);
 		iSetColor(255, 255, 255);
 		iText(575, 500, "GAME OVER!", GLUT_BITMAP_TIMES_ROMAN_24);
-		iText(560, 470, "OPPS! You Eat YourSelf", GLUT_BITMAP_9_BY_15);
+		iText(560, 470, "OPPS! You Eat YourSelf.", GLUT_BITMAP_9_BY_15);
 		iText(575, 425, t_score, GLUT_BITMAP_HELVETICA_18);
 		iShowImage(615, 325, 60, 60, reset_img);
 	}
+	if (toogle_pause == 1)
+	{
+		iSetColor(255,255,255);
+		iText(575, 500, "GAME PAUSED!", GLUT_BITMAP_TIMES_ROMAN_24);
+	}
+	
 }
 
 void snake_movement()
@@ -366,6 +384,24 @@ void iMouse(int button, int state, int mx, int my)
 				toogle_music = 0;
 			}
 		}
+		if (mx >= 75 && mx <= 125 && my >= 230 && my <= 280)
+		{
+			if (toogle_pause == 0)
+			{
+				PlaySound(TEXT("music//gameover.wav"), NULL, SND_ASYNC);
+				toogle_pause = 1;
+				iPauseTimer(0);
+			}
+			else
+			{
+				toogle_pause = 0;
+				iResumeTimer(0);
+			}
+		}
+		if (mx >= 125 && mx <= 175 && my >= 100 && my <= 150)
+		{
+			exit(0);
+		}
 		if (mx >= 615 && mx <= 675 && my >= 325 && my <= 385)
 		{
 			if (game_over == 1)
@@ -396,7 +432,9 @@ void iKeyboard(unsigned char key)
 	if (key == 'p')
 	{
 		//do something with 'q'
+		PlaySound(TEXT("music//gameover.wav"), NULL, SND_ASYNC);
 		iPauseTimer(0);
+		toogle_pause = 1;
 	}
 	if (key == 'r')
 	{
@@ -404,6 +442,7 @@ void iKeyboard(unsigned char key)
 		{
 			iResumeTimer(0);
 		}
+		toogle_pause = 0;
 	}
 	if (key == 'w' || key == 's' || key == 'a' || key == 'd' && game_over == 0)
 	{
@@ -466,6 +505,10 @@ int main()
 	sound_on = iLoadImage("images\\volume.png");
 	sound_off = iLoadImage("images\\no-sound.png");
 	reset_img = iLoadImage("images\\reset.png");
+	pause_btn = iLoadImage("images\\pause.png");
+	play_btn = iLoadImage("images\\play.png");
+	back_btn = iLoadImage("images\\previous.png");
+	exit_btn = iLoadImage("images\\exit.png");
 
 	for (int i = 0; i < 1000; i++)
 	{
