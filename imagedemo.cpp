@@ -293,6 +293,19 @@ void iDraw()
 			PlaySound(TEXT("music//food.wav"), NULL, SND_ASYNC);
 			rx = (rand() % (ground_width_end - ground_width_start)) + ground_width_start;
 			ry = (rand() % (ground_height_end - ground_height_start)) + ground_height_start;
+			for (int i = 1; i <= 36; i++)
+			{
+				// if (rx >= obs_1_x[i] && rx <= obs_1_x[i] + 30 && ry >= obs_1_y[i] && ry <= obs_1_y[i] + 30)
+				// {
+				// 	rx = (rand() % (ground_width_end - ground_width_start)) + ground_width_start;
+				// 	ry = (rand() % (ground_height_end - ground_height_start)) + ground_height_start;
+				// }
+				while (rx >= obs_1_x[i] && rx <= obs_1_x[i] + 50 && ry >= obs_1_y[i] && ry <= obs_1_y[i] + 50)
+				{
+					rx = (rand() % (ground_width_end - ground_width_start)) + ground_width_start;
+					ry = (rand() % (ground_height_end - ground_height_start)) + ground_height_start;
+				}
+			}
 		}
 		iShowImage(rx, ry, 30, 30, fruit);
 		//////////////////////////////////////////////////////////////
