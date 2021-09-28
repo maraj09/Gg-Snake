@@ -5,15 +5,17 @@ int ground_img, side_logo, sound_on, sound_off, toogle_music = 1, reset_img, too
 int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail, fruit;
 int snake_width = 20, snake_height = 20;
 int x[2000], y[2000], d = 1, length = 50, dir = 1, p_d = 0;
-int snake_speed = 12, game_over = 0;
+int snake = 12, game_over = 0;
 int rx = 320, ry = 320, f = 0;
 char t_score[50], score[5];
+
+int obs_1_x[100], obs_1_y[100], obs_rendered = 0;
 
 int playbutton_hover, learnbutton_hover, scorebutton_hover, creditbutton_hover, exitbutton_hover;
 int playbutton, learnbutton, scorebutton, creditbutton, exitbutton;
 char homemenu[25] = "images\\gg poster.bmp";
 
-int gState = -1;
+int gState = -1, gLevel = 2;
 int music_fix = 0;
 int button_hover[5] = {0, 0, 0, 0, 0};
 
@@ -73,7 +75,87 @@ void iDraw()
 		iClear();
 		iSetColor(30, 30, 30);
 		iFilledRectangle(0, 0, 1280, 720);
-		iShowImage(ground_width_start, ground_height_start, ground_width, ground_height, ground_img);
+		if (gLevel == 1)
+		{
+			iShowImage(ground_width_start, ground_height_start, ground_width, ground_height, ground_img);
+		}
+		else if (gLevel == 2)
+		{
+			iSetColor(255, 0, 0);
+			iShowImage(ground_width_start, ground_height_start, ground_width, ground_height, ground_img);
+
+			for (int i = 1; i <= 36; i++)
+			{
+				if (i <= 5)
+				{
+					obs_1_x[i] = obs_1_x[i - 1] + 30;
+					obs_1_y[i] = obs_1_y[0];
+				}
+				else if (i >= 6 && i <= 9)
+				{
+					obs_1_x[i] = obs_1_x[0] + 30;
+					obs_1_y[i] = obs_1_y[i - 1] - 30;
+				}
+				else if (i >= 10 && i <= 14)
+				{
+					if (i == 10)
+					{
+						obs_1_x[i] = 700 + 30;
+					}
+					else
+					{
+						obs_1_x[i] = obs_1_x[i - 1] + 30;
+					}
+					obs_1_y[i] = obs_1_y[0];
+				}
+				else if (i >= 15 && i <= 18)
+				{
+					obs_1_x[i] = obs_1_x[i - 1];
+					obs_1_y[i] = obs_1_y[i - 1] - 30;
+				}
+				else if (i >= 19 && i <= 23)
+				{
+
+					if (i == 19)
+					{
+						obs_1_x[i] = 370 + 30;
+					}
+					else
+					{
+						obs_1_x[i] = obs_1_x[i - 1] + 30;
+					}
+					obs_1_y[i] = 130;
+				}
+				else if (i >= 24 && i <= 27)
+				{
+					obs_1_x[i] = 400;
+					obs_1_y[i] = obs_1_y[i - 1] + 30;
+				}
+				else if (i >= 28 && i <= 32)
+				{
+					if (i == 28)
+					{
+						obs_1_x[i] = 700 + 30;
+					}
+					else
+					{
+						obs_1_x[i] = obs_1_x[i - 1] + 30;
+					}
+
+					obs_1_y[i] = 130;
+				}
+				else if (i >= 33 && i <= 36)
+				{
+					obs_1_x[i] = obs_1_x[i - 1];
+					obs_1_y[i] = obs_1_y[i - 1] + 30;
+				}
+
+				iFilledRectangle(obs_1_x[i], obs_1_y[i], 28, 28);
+			}
+
+			// iFilledRectangle(500, 500, 30, 30);
+		}
+
 		iSetColor(255, 255, 255);
 		iRectangle(ground_width_start, ground_height_start, ground_width, ground_height);
 		iSetColor(255, 255, 255);
@@ -254,7 +336,7 @@ void snake_movement()
 				}
 				else
 				{
-					x[0] = x[0] + snake_speed;
+					x[0] = x[0] + snake;
 					p_d = 1;
 				}
 			}
@@ -266,7 +348,7 @@ void snake_movement()
 				}
 				else
 				{
-					x[0] = x[0] - snake_speed;
+					x[0] = x[0] - snake;
 					p_d = 2;
 				}
 			}
@@ -278,7 +360,7 @@ void snake_movement()
 				}
 				else
 				{
-					y[0] = y[0] - snake_speed;
+					y[0] = y[0] - snake;
 					p_d = 3;
 				}
 			}
@@ -290,7 +372,7 @@ void snake_movement()
 				}
 				else
 				{
-					y[0] = y[0] + snake_speed;
+					y[0] = y[0] + snake;
 					p_d = 4;
 				}
 			}
@@ -309,14 +391,14 @@ void snake_movement()
 				else
 				{
 					dir = 1;
-					x[0] = x[0] + snake_speed;
+					x[0] = x[0] + snake;
 				}
 			}
 			else
 			{
 
 				dir = 2;
-				x[0] = x[0] - snake_speed;
+				x[0] = x[0] - snake;
 			}
 			break;
 		case 2:
@@ -328,14 +410,14 @@ void snake_movement()
 				}
 				else
 				{
-					x[0] = x[0] - snake_speed;
+					x[0] = x[0] - snake;
 					dir = 2;
 				}
 			}
 			else
 			{
 				dir = 1;
-				x[0] = x[0] + snake_speed;
+				x[0] = x[0] + snake;
 			}
 			break;
 		case 3:
@@ -348,13 +430,13 @@ void snake_movement()
 				else
 				{
 					dir = 3;
-					y[0] = y[0] - snake_speed;
+					y[0] = y[0] - snake;
 				}
 			}
 			else
 			{
 				dir = 4;
-				y[0] = y[0] + snake_speed;
+				y[0] = y[0] + snake;
 			}
 
 			break;
@@ -368,13 +450,13 @@ void snake_movement()
 				else
 				{
 					dir = 4;
-					y[0] = y[0] + snake_speed;
+					y[0] = y[0] + snake;
 				}
 			}
 			else
 			{
 				dir = 3;
-				y[0] = y[0] - snake_speed;
+				y[0] = y[0] - snake;
 			}
 
 			break;
@@ -387,6 +469,19 @@ void snake_movement()
 				PlaySound(TEXT("music//gameover.wav"), NULL, SND_SYNC);
 				game_over = 1;
 				break;
+			}
+		}
+		if (gLevel == 2)
+		{
+			for (int i = 1; i <= 36; i++)
+			{
+				if (x[0] + snake_width >= obs_1_x[i] && x[0] <= obs_1_x[i] + 30 && y[0] + snake_width >= obs_1_y[i] && y[0] <= obs_1_y[i] + 30)
+				{
+					iPauseTimer(0);
+					PlaySound(TEXT("music//gameover.wav"), NULL, SND_SYNC);
+					game_over = 1;
+					break;
+				}
 			}
 		}
 	}
@@ -409,7 +504,7 @@ void iPassiveMouse(int mx, int my)
 {
 	if (gState == -1)
 	{
-		printf("%d%d\n", mx, my);
+		// printf("%d%d\n", mx, my);
 
 		if (mx >= 125 && mx <= 300 && my >= 525 && my <= 575)
 		{
@@ -555,7 +650,6 @@ void iMouse(int button, int state, int mx, int my)
 			if (mx >= 125 && mx <= 300 && my >= 525 && my <= 575)
 			{
 				gState++;
-				
 			}
 			if (mx >= 250 && mx <= 385 && my >= 130 && my <= 175)
 			{
@@ -637,6 +731,10 @@ int main()
 	{
 		mciSendString(TEXT("play mp3 repeat"), NULL, 0, NULL);
 	}
+	else
+	{
+		mciSendString(TEXT("stop mp3"), NULL, 0, NULL);
+	}
 
 	// loading images.
 	/* iLoadImage() will return an interger type id
@@ -672,14 +770,23 @@ int main()
 	creditbutton = iLoadImage("images\\CREDIT_G.png");
 	exitbutton = iLoadImage("images\\EXIT_R.png");
 
-	for (int i = 0; i < 1000; i++)
+	for (int i = 0; i < 2000; i++)
 	{
 		x[i] = 0;
 		y[i] = 0;
 	}
 
+	for (int i = 0; i < 100; i++)
+	{
+		obs_1_x[i] = 0;
+		obs_1_y[i] = 0;
+	}
+
 	x[0] = 300;
 	y[0] = 300;
+
+	obs_1_x[0] = 370;
+	obs_1_y[0] = 550;
 
 	iStart(); // it will start drawing
 
