@@ -15,9 +15,11 @@ int playbutton_hover, learnbutton_hover, scorebutton_hover, creditbutton_hover, 
 int playbutton, learnbutton, scorebutton, creditbutton, exitbutton;
 char homemenu[25] = "images\\gg poster.bmp";
 
-int gState = -1, gLevel = 2;
+int gState = -1, gLevel = 3;
 int music_fix = 0;
 int button_hover[5] = {0, 0, 0, 0, 0};
+
+int check_hit_times = (gLevel > 2) ? 40 : 36 ;
 
 void iDraw()
 {
@@ -79,12 +81,12 @@ void iDraw()
 		{
 			iShowImage(ground_width_start, ground_height_start, ground_width, ground_height, ground_img);
 		}
-		else if (gLevel == 2)
+		else if (gLevel > 1)
 		{
 			iSetColor(255, 0, 0);
 			iShowImage(ground_width_start, ground_height_start, ground_width, ground_height, ground_img);
-
-			for (int i = 1; i <= 36; i++)
+			
+			for (int i = 1; i <= check_hit_times ; i++)
 			{
 				if (i <= 5)
 				{
@@ -148,6 +150,28 @@ void iDraw()
 				{
 					obs_1_x[i] = obs_1_x[i - 1];
 					obs_1_y[i] = obs_1_y[i - 1] + 30;
+				}
+				else if (i >= 37 && i <= 40)
+				{
+					if (i <= 38 )
+					{
+						if (i == 37)
+						{
+							obs_1_x[i] = 610;
+						}else{
+							obs_1_x[i] = obs_1_x[i - 1] + 30;
+						}
+						obs_1_y[i] = 350;
+					}else{
+						if (i == 39)
+						{
+							obs_1_x[i] = 610;
+						}else{
+							obs_1_x[i] = obs_1_x[i - 1] + 30;
+						}
+						obs_1_y[i] = 320;
+					}
+					
 				}
 
 				iFilledRectangle(obs_1_x[i], obs_1_y[i], 28, 28);
@@ -293,14 +317,9 @@ void iDraw()
 			PlaySound(TEXT("music//food.wav"), NULL, SND_ASYNC);
 			rx = (rand() % (ground_width_end - ground_width_start)) + ground_width_start;
 			ry = (rand() % (ground_height_end - ground_height_start)) + ground_height_start;
-			for (int i = 1; i <= 36; i++)
+			for (int i = 1; i <= check_hit_times; i++)
 			{
-				// if (rx >= obs_1_x[i] && rx <= obs_1_x[i] + 30 && ry >= obs_1_y[i] && ry <= obs_1_y[i] + 30)
-				// {
-				// 	rx = (rand() % (ground_width_end - ground_width_start)) + ground_width_start;
-				// 	ry = (rand() % (ground_height_end - ground_height_start)) + ground_height_start;
-				// }
-				while (rx >= obs_1_x[i] && rx <= obs_1_x[i] + 50 && ry >= obs_1_y[i] && ry <= obs_1_y[i] + 50)
+				while (rx >= obs_1_x[i] - 30 && rx <= obs_1_x[i] + 50 && ry >= obs_1_y[i] - 30 && ry <= obs_1_y[i] + 50)
 				{
 					rx = (rand() % (ground_width_end - ground_width_start)) + ground_width_start;
 					ry = (rand() % (ground_height_end - ground_height_start)) + ground_height_start;
@@ -333,9 +352,16 @@ void iDraw()
 	}
 }
 
+void game_over_func()
+{
+	game_over = 1;
+	iPauseTimer(0);
+	PlaySound(TEXT("music//gameover.wav"), NULL, SND_SYNC);
+}
+
 void snake_movement()
 {
-	if (game_over == 0)
+	if (game_over == 0 && gState == 0)
 	{
 
 		switch (d)
@@ -343,9 +369,13 @@ void snake_movement()
 		case 0:
 			if (dir == 1)
 			{
-				if (x[0] + snake_width >= ground_width_end)
+				if (x[0] + snake_width >= ground_width_end && gLevel < 3)
 				{
 					x[0] = ground_width_start;
+				}
+				else if (x[0] + snake_width >= ground_width_end && gLevel == 3)
+				{
+					game_over_func();
 				}
 				else
 				{
@@ -355,9 +385,13 @@ void snake_movement()
 			}
 			else if (dir == 2)
 			{
-				if (x[0] <= ground_width_start)
+				if (x[0] <= ground_width_start && gLevel < 3)
 				{
 					x[0] = ground_width_end - snake_width;
+				}
+				else if (x[0] <= ground_width_start && gLevel == 3)
+				{
+					game_over_func();
 				}
 				else
 				{
@@ -367,9 +401,13 @@ void snake_movement()
 			}
 			else if (dir == 3)
 			{
-				if (y[0] <= ground_height_start + 10)
+				if (y[0] <= ground_height_start + 10 && gLevel < 3)
 				{
 					y[0] = ground_height_end - snake_height;
+				}
+				else if (y[0] <= ground_height_start + 10 && gLevel == 3)
+				{
+					game_over_func();
 				}
 				else
 				{
@@ -379,9 +417,13 @@ void snake_movement()
 			}
 			else if (dir == 4)
 			{
-				if (y[0] + snake_height + 10 >= ground_height_end)
+				if (y[0] + snake_height + 10 >= ground_height_end && gLevel < 3)
 				{
 					y[0] = ground_height_start;
+				}
+				else if (y[0] + snake_height + 10 >= ground_height_end && gLevel == 3)
+				{
+					game_over_func();
 				}
 				else
 				{
@@ -397,9 +439,13 @@ void snake_movement()
 		case 1:
 			if (p_d != 2)
 			{
-				if (x[0] + snake_width + 10 >= ground_width_end)
+				if (x[0] + snake_width + 10 >= ground_width_end && gLevel < 3)
 				{
 					x[0] = ground_width_start;
+				}
+				else if (x[0] + snake_width >= ground_width_end && gLevel == 3)
+				{
+					game_over_func();
 				}
 				else
 				{
@@ -417,9 +463,13 @@ void snake_movement()
 		case 2:
 			if (p_d != 1)
 			{
-				if (x[0] <= ground_width_start)
+				if (x[0] <= ground_width_start && gLevel < 3)
 				{
 					x[0] = ground_width_end - snake_width;
+				}
+				else if (x[0] <= ground_width_start && gLevel == 3)
+				{
+					game_over_func();
 				}
 				else
 				{
@@ -436,9 +486,13 @@ void snake_movement()
 		case 3:
 			if (p_d != 4)
 			{
-				if (y[0] <= ground_height_start + 10)
+				if (y[0] <= ground_height_start + 10 && gLevel < 3)
 				{
 					y[0] = ground_height_end - snake_height;
+				}
+				else if (y[0] <= ground_height_start + 10 && gLevel == 3)
+				{
+					game_over_func();
 				}
 				else
 				{
@@ -456,9 +510,13 @@ void snake_movement()
 		case 4:
 			if (p_d != 3)
 			{
-				if (y[0] + snake_height + 10 >= ground_height_end)
+				if (y[0] + snake_height + 10 >= ground_height_end && gLevel < 3)
 				{
 					y[0] = ground_height_start;
+				}
+				else if (y[0] + snake_height + 10 >= ground_height_end && gLevel == 3)
+				{
+					game_over_func();
 				}
 				else
 				{
@@ -474,6 +532,9 @@ void snake_movement()
 
 			break;
 		}
+	}
+	if (game_over == 0)
+	{
 		for (int i = 2; i < length; i++)
 		{
 			if (x[0] == x[i] && y[0] == y[i])
@@ -484,9 +545,9 @@ void snake_movement()
 				break;
 			}
 		}
-		if (gLevel == 2)
+		if (gLevel > 1)
 		{
-			for (int i = 1; i <= 36; i++)
+			for (int i = 1; i <= check_hit_times; i++)
 			{
 				if (x[0] + snake_width >= obs_1_x[i] && x[0] <= obs_1_x[i] + 30 && y[0] + snake_width >= obs_1_y[i] && y[0] <= obs_1_y[i] + 30)
 				{
@@ -649,12 +710,15 @@ void iMouse(int button, int state, int mx, int my)
 				if (game_over == 1)
 				{
 					game_over = 0;
+					toogle_pause = 0;
 					iResumeTimer(0);
 					length = 10;
 					x[0] = 300;
 					y[0] = 300;
 					f = 0;
 					d = 1;
+					dir = 1;
+					p_d = 1;
 				}
 			}
 		}
