@@ -16,10 +16,10 @@ int playbutton, learnbutton, scorebutton, creditbutton, exitbutton;
 char homemenu[25] = "images\\gg poster.bmp";
 
 int gState = -1, gLevel = 3;
-int music_fix = 0;
-int button_hover[5] = {0, 0, 0, 0, 0};
+int music_fix[] = {0, 0, 0, 0, 0};
+int button_hover[] = {0, 0, 0, 0, 0};
 
-int check_hit_times = (gLevel > 2) ? 40 : 36 ;
+int check_hit_times = (gLevel > 2) ? 40 : 36;
 
 void iDraw()
 {
@@ -85,8 +85,8 @@ void iDraw()
 		{
 			iSetColor(255, 0, 0);
 			iShowImage(ground_width_start, ground_height_start, ground_width, ground_height, ground_img);
-			
-			for (int i = 1; i <= check_hit_times ; i++)
+
+			for (int i = 1; i <= check_hit_times; i++)
 			{
 				if (i <= 5)
 				{
@@ -153,25 +153,30 @@ void iDraw()
 				}
 				else if (i >= 37 && i <= 40)
 				{
-					if (i <= 38 )
+					if (i <= 38)
 					{
 						if (i == 37)
 						{
 							obs_1_x[i] = 610;
-						}else{
+						}
+						else
+						{
 							obs_1_x[i] = obs_1_x[i - 1] + 30;
 						}
 						obs_1_y[i] = 350;
-					}else{
+					}
+					else
+					{
 						if (i == 39)
 						{
 							obs_1_x[i] = 610;
-						}else{
+						}
+						else
+						{
 							obs_1_x[i] = obs_1_x[i - 1] + 30;
 						}
 						obs_1_y[i] = 320;
 					}
-					
 				}
 
 				iFilledRectangle(obs_1_x[i], obs_1_y[i], 28, 28);
@@ -315,8 +320,8 @@ void iDraw()
 			length += 5;
 			f = f + 1;
 			PlaySound(TEXT("music//food.wav"), NULL, SND_ASYNC);
-			rx = (rand() % (ground_width_end - ground_width_start)) + ground_width_start;
-			ry = (rand() % (ground_height_end - ground_height_start)) + ground_height_start;
+			rx = (rand() % ((ground_width_end - 30) - ground_width_start)) + ground_width_start;
+			ry = (rand() % ((ground_height_end - 30) - ground_height_start)) + ground_height_start;
 			for (int i = 1; i <= check_hit_times; i++)
 			{
 				while (rx >= obs_1_x[i] - 30 && rx <= obs_1_x[i] + 50 && ry >= obs_1_y[i] - 30 && ry <= obs_1_y[i] + 50)
@@ -582,76 +587,76 @@ void iPassiveMouse(int mx, int my)
 
 		if (mx >= 125 && mx <= 300 && my >= 525 && my <= 575)
 		{
-			if (music_fix == 0)
+			if (music_fix[0] == 0)
 			{
-				PlaySound(TEXT("music\\buttonSound2.wav"), NULL, SND_ASYNC | SND_NOSTOP);
-				music_fix = 1;
+				PlaySound(TEXT("music\\sd.wav"), NULL, SND_ASYNC);
+				music_fix[0] = 1;
 				button_hover[0] = 1;
 			}
 		}
 		else
 		{
-			music_fix = 0;
+			music_fix[0] = 0;
 			button_hover[0] = 0;
 		}
 		if (mx >= 125 && mx <= 300 && my >= 425 && my <= 475)
 		{
 
-			if (music_fix == 0)
+			if (music_fix[1] == 0)
 			{
-				PlaySound(TEXT("music\\buttonSound2.wav"), NULL, SND_ASYNC | SND_NOSTOP);
-				music_fix = 1;
+				PlaySound(TEXT("music\\sd.wav"), NULL, SND_ASYNC);
+				music_fix[1] = 1;
 				button_hover[1] = 1;
 			}
 		}
 		else
 		{
-			music_fix = 0;
+			music_fix[1] = 0;
 			button_hover[1] = 0;
 		}
 		if (mx >= 125 && mx <= 300 && my >= 325 && my <= 375)
 		{
 			//printf("%d%d\n",mx,my);
-			if (music_fix == 0)
+			if (music_fix[2] == 0)
 			{
-				PlaySound(TEXT("music\\buttonSound2.wav"), NULL, SND_ASYNC | SND_NOSTOP);
-				music_fix = 1;
+				PlaySound(TEXT("music\\sd.wav"), NULL, SND_ASYNC);
+				music_fix[2] = 1;
 				button_hover[2] = 1;
 			}
 		}
 		else
 		{
-			music_fix = 0;
+			music_fix[2] = 0;
 			button_hover[2] = 0;
 		}
 		if (mx >= 40 && mx <= 160 && my >= 130 && my <= 175)
 		{
 			//printf("%d%d\n",mx,my);
-			if (music_fix == 0)
+			if (music_fix[3] == 0)
 			{
-				PlaySound(TEXT("music\\buttonSound2.wav"), NULL, SND_ASYNC | SND_NOSTOP);
-				music_fix = 1;
+				PlaySound(TEXT("music\\sd.wav"), NULL, SND_ASYNC);
+				music_fix[3] = 1;
 				button_hover[3] = 1;
 			}
 		}
 		else
 		{
-			music_fix = 0;
+			music_fix[3] = 0;
 			button_hover[3] = 0;
 		}
 		if (mx >= 250 && mx <= 385 && my >= 130 && my <= 175)
 		{
 			//printf("%d%d\n",mx,my);
-			if (music_fix == 0)
+			if (music_fix[4] == 0)
 			{
-				PlaySound(TEXT("music\\buttonSound2.wav"), NULL, SND_ASYNC | SND_NOSTOP);
-				music_fix = 1;
+				PlaySound(TEXT("music\\buttonSound2.wav"), NULL, SND_ASYNC);
+				music_fix[4] = 1;
 				button_hover[4] = 1;
 			}
 		}
 		else
 		{
-			music_fix = 0;
+			music_fix[4] = 0;
 			button_hover[4] = 0;
 		}
 	}
