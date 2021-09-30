@@ -649,7 +649,7 @@ void iPassiveMouse(int mx, int my)
 			//printf("%d%d\n",mx,my);
 			if (music_fix[4] == 0)
 			{
-				PlaySound(TEXT("music\\buttonSound2.wav"), NULL, SND_ASYNC);
+				PlaySound(TEXT("music\\sd.wav"), NULL, SND_ASYNC);
 				music_fix[4] = 1;
 				button_hover[4] = 1;
 			}
