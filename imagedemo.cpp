@@ -12,7 +12,7 @@ char t_score[50], score[5], highScore[5];
 int obs_1_x[100], obs_1_y[100], obs_rendered = 0;
 
 int playbutton_hover, learnbutton_hover, scorebutton_hover, creditbutton_hover, exitbutton_hover;
-int playbutton, learnbutton, scorebutton, creditbutton, exitbutton;
+int playbutton, learnbutton, scorebutton, creditbutton, exitbutton, play_after;
 char homemenu[25] = "images\\gg poster.bmp";
 char Exit[30] = "images\\exit screen01.bmp";
 char CREDIT[30] = "images\\creditbg01.bmp";
@@ -32,6 +32,9 @@ int high_score;
 FILE *fW;
 FILE *fR;
 FILE *fN;
+
+int name_mode, len = 0, reset_text;
+char str_input_name[100];
 
 void iDraw()
 {
@@ -87,7 +90,7 @@ void iDraw()
 		{
 			mciSendString(TEXT("stop mp3"), NULL, 0, NULL);
 		}
-		
+
 		iSetColor(30, 30, 30);
 		iFilledRectangle(0, 0, 1280, 720);
 		if (gLevel == 1)
@@ -377,7 +380,8 @@ void iDraw()
 			iSetColor(255, 255, 255);
 			iText(575, 500, "GAME PAUSED!", GLUT_BITMAP_TIMES_ROMAN_24);
 		}
-	}else if (gState == 1)
+	}
+	else if (gState == 1)
 	{
 		iShowBMP(0, 0, Exit);
 	}
@@ -385,7 +389,27 @@ void iDraw()
 	{
 		iShowBMP(0, 0, CREDIT);
 	}
-	
+	else if (gState == -2)
+	{
+		if (name_mode == 1)
+		{
+			iSetColor(255, 255, 255);
+		}
+		else
+		{
+			iSetColor(155, 155, 155);
+		}
+
+		iShowImage(0, 0, 1280, 720, play_after);
+		iText(95, 390, "Click to enter name: ", GLUT_BITMAP_9_BY_15);
+		iRectangle(92, 305, 290, 53);
+		iSetColor(0, 255, 0);
+		iText(100, 325, str_input_name);
+		iShowImage(190, 225, 60, 60, reset_text);
+
+		iShowImage(35, 35, 40, 40, back_btn);
+	}
+
 	// File Handeling
 	// if (game_over == 1)
 	// {
@@ -728,7 +752,7 @@ void iMouse(int button, int state, int mx, int my)
 {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		// printf("%d%d%d\n", mx, my, toogle_music);
+		printf("%d %d\n", mx, my);
 		if (gState == 0)
 		{
 			/* code */
@@ -791,16 +815,15 @@ void iMouse(int button, int state, int mx, int my)
 		{
 			if (mx >= 125 && mx <= 300 && my >= 525 && my <= 575)
 			{
-				gState++;
+				gState = -2;
 			}
 			if (mx >= 250 && mx <= 385 && my >= 130 && my <= 175)
 			{
 				gState = 1;
-				
 			}
-			if(mx >= 40 && mx <= 160 && my >= 130 && my <= 175)
+			if (mx >= 40 && mx <= 160 && my >= 130 && my <= 175)
 			{
-				gState =2;
+				gState = 2;
 			}
 		}
 		else if (gState == 1)
@@ -812,6 +835,30 @@ void iMouse(int button, int state, int mx, int my)
 			else if (mx >= 470 && mx <= 590 && my >= 250 && my <= 290)
 			{
 				gState = -1;
+			}
+		}
+		else if (gState == -2)
+		{
+			if (mx >= 35 && mx <= 75 && my >= 35 && my <= 75)
+			{
+				gState = -1;
+			}
+			if (mx >= 92 && mx <= 382 && my >= 305 && my <= 358)
+			{
+				name_mode = 1;
+			}
+			else
+			{
+				name_mode = 0;
+			}
+			if (mx >= 190 && mx <= 250 && my >= 225 && my <= 285)
+			{
+				
+				for (int i = 0; i < len; i++)
+				{
+					str_input_name[i] = ' ';
+				}
+				len = 0;
 			}
 		}
 	}
@@ -843,9 +890,14 @@ void iKeyboard(unsigned char key)
 		}
 		toogle_pause = 0;
 	}
-	if (key == 'w' || key == 's' || key == 'a' || key == 'd' && game_over == 0)
+	if (key == 'w' || key == 's' || key == 'a' || key == 'd' && game_over == 0 && name_mode == 0)
 	{
 		PlaySound(TEXT("music//move.wav"), NULL, SND_ASYNC);
+	}
+	if (name_mode == 1)
+	{
+		str_input_name[len] = key;
+		len++;
 	}
 
 	//place your codes for other keys here
@@ -918,6 +970,7 @@ int main()
 	play_btn = iLoadImage("images\\play.png");
 	back_btn = iLoadImage("images\\previous.png");
 	exit_btn = iLoadImage("images\\exit.png");
+	play_after = iLoadImage("images\\afterplay.png");
 	// In Menu
 	playbutton_hover = iLoadImage("images\\Goldenplay.png");
 	scorebutton_hover = iLoadImage("images\\scores_g.png");
@@ -929,6 +982,7 @@ int main()
 	learnbutton = iLoadImage("images\\learn2.png");
 	creditbutton = iLoadImage("images\\CREDIT_G.png");
 	exitbutton = iLoadImage("images\\EXIT_R.png");
+	reset_text = iLoadImage("images\\reset_text.png");
 
 	for (int i = 0; i < 2000; i++)
 	{
@@ -955,10 +1009,9 @@ int main()
 	{
 		fW = fopen("GGSNAKE_SCORES.txt", "w");
 	}
-	
+
 	get_high_score();
 	iStart(); // it will start drawing
 
 	return 0;
 }
-
