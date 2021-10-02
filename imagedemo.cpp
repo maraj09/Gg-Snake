@@ -16,6 +16,8 @@ int playbutton, learnbutton, scorebutton, creditbutton, exitbutton, play_after;
 char homemenu[25] = "images\\gg poster.bmp";
 char Exit[30] = "images\\exit screen01.bmp";
 char CREDIT[30] = "images\\creditbg01.bmp";
+char LEARN[30] = "images\\learnpage02.bmp";
+char SCORE[30] = "images\\highscorebg02.bmp";
 int gState = -1, gLevel = 3;
 int music_fix[] = {0, 0, 0, 0, 0};
 int button_hover[] = {0, 0, 0, 0, 0};
@@ -90,7 +92,6 @@ void iDraw()
 		{
 			mciSendString(TEXT("stop mp3"), NULL, 0, NULL);
 		}
-
 		iSetColor(30, 30, 30);
 		iFilledRectangle(0, 0, 1280, 720);
 		if (gLevel == 1)
@@ -384,8 +385,7 @@ void iDraw()
 			iSetColor(255, 255, 255);
 			iText(575, 500, "GAME PAUSED!", GLUT_BITMAP_TIMES_ROMAN_24);
 		}
-	}
-	else if (gState == 1)
+	}else if (gState == 1)
 	{
 		iShowBMP(0, 0, Exit);
 	}
@@ -413,7 +413,15 @@ void iDraw()
 
 		iShowImage(35, 35, 40, 40, back_btn);
 	}
-
+	else if (gState == 3)
+	{
+		iShowBMP(0, 0, LEARN);
+	}
+	else if (gState == 4)
+	{
+		iShowBMP(0, 0, SCORE);
+	}
+	
 	// File Handeling
 	// if (game_over == 1)
 	// {
@@ -829,6 +837,14 @@ void iMouse(int button, int state, int mx, int my)
 			{
 				gState = 2;
 			}
+			if(mx >= 125 && mx <= 300 && my >= 425 && my <= 475)
+			{
+				gState =3;
+			}
+			if(mx >= 125 && mx <= 300 && my >= 325 && my <= 375)
+			{
+				gState =4;
+			}
 		}
 		else if (gState == 1)
 		{
@@ -871,6 +887,28 @@ void iMouse(int button, int state, int mx, int my)
 				len = 0;
 			}
 		}
+		else if (gState == 2)
+		{
+			if (mx >= 40 && mx <= 120 && my >= 610 && my <= 700)
+			{
+				gState = -1;
+			}
+		}
+		else if (gState == 3)
+		{
+			if (mx >= 30 && mx <= 100 && my >= 620 && my <= 705)
+			{
+				gState = -1;
+			}
+		}
+		else if (gState == 4)
+		{
+			if (mx >= 30 && mx <= 100 && my >= 620 && my <= 705)
+			{
+				gState = -1;
+			}
+		}
+		
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
 	{
@@ -1019,7 +1057,6 @@ int main()
 	{
 		fW = fopen("GGSNAKE_SCORES.txt", "w");
 	}
-
 	get_high_score();
 	iStart(); // it will start drawing
 
