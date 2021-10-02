@@ -22,7 +22,7 @@ int button_hover[] = {0, 0, 0, 0, 0};
 
 int check_hit_times = (gLevel > 2) ? 40 : 36;
 
-char name[100] = "Rashid\n";
+char name[100];
 int score_number = 0;
 int file_output_length = 1;
 char players_name[20];
@@ -231,16 +231,20 @@ void iDraw()
 		iShowImage(35, 100, 40, 40, back_btn);
 		iShowImage(125, 100, 50, 50, exit_btn);
 		//	Score Board
+		iSetColor(255, 255, 255);
+		iText(1150, 600, "Gg", GLUT_BITMAP_HELVETICA_18);
+		iSetColor(255, 0, 0);
+		iText(1115, 560, name, GLUT_BITMAP_TIMES_ROMAN_24);
 		iSetColor(102, 0, 255);
-		iText(1100, 550, "ScoreBoard", GLUT_BITMAP_TIMES_ROMAN_24);
+		iText(1100, 500, "ScoreBoard", GLUT_BITMAP_TIMES_ROMAN_24);
 		iSetColor(255, 102, 0);
-		iText(1125, 510, "LEVEL 1", GLUT_BITMAP_HELVETICA_18);
+		iText(1125, 460, "LEVEL 1", GLUT_BITMAP_HELVETICA_18);
 		iSetColor(255, 255, 0);
-		iText(1075, 450, "Your Current Score", GLUT_BITMAP_9_BY_15);
+		iText(1075, 400, "Your Current Score", GLUT_BITMAP_9_BY_15);
 		sprintf(score, "%d", score_number);
-		iText(1150, 425, score, GLUT_BITMAP_9_BY_15);
+		iText(1150,  375, score, GLUT_BITMAP_9_BY_15);
 		iSetColor(0, 255, 0);
-		iText(1100, 350, "Highest Score", GLUT_BITMAP_9_BY_15);
+		iText(1100, 300, "Highest Score", GLUT_BITMAP_9_BY_15);
 		if (score_number > high_score)
 		{
 			sprintf(highScore, "%d", score_number);
@@ -250,7 +254,7 @@ void iDraw()
 			sprintf(highScore, "%d", high_score);
 		}
 
-		iText(1150, 325, highScore, GLUT_BITMAP_9_BY_15);
+		iText(1150, 275, highScore, GLUT_BITMAP_9_BY_15);
 
 		//////////////////////////////////////////////////////////////
 		// FOR SNAKE MOVEMENT-Start
@@ -425,7 +429,7 @@ void game_over_func()
 	iPauseTimer(0);
 	PlaySound(TEXT("music//gameover.wav"), NULL, SND_SYNC);
 	fputs(name, fW);
-	fprintf(fW, "%d\n", score_number);
+	fprintf(fW, "\n%d\n", score_number);
 	fclose(fW);
 }
 void get_high_score()
@@ -849,11 +853,17 @@ void iMouse(int button, int state, int mx, int my)
 			}
 			else
 			{
+				if (strlen(str_input_name) == 0)
+				{
+					strcpy(str_input_name, "Nameless");
+				}
+				strcpy(name, str_input_name);
 				name_mode = 0;
+				gState = 0;
 			}
 			if (mx >= 190 && mx <= 250 && my >= 225 && my <= 285)
 			{
-				
+
 				for (int i = 0; i < len; i++)
 				{
 					str_input_name[i] = ' ';
