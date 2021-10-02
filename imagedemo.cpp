@@ -14,7 +14,7 @@ int obs_1_x[100], obs_1_y[100], obs_rendered = 0;
 int playbutton_hover, learnbutton_hover, scorebutton_hover, creditbutton_hover, exitbutton_hover;
 int playbutton, learnbutton, scorebutton, creditbutton, exitbutton;
 char homemenu[25] = "images\\gg poster.bmp";
-
+char Exit[30] = "images\\exit screen01.bmp";
 int gState = -1, gLevel = 3;
 int music_fix[] = {0, 0, 0, 0, 0};
 int button_hover[] = {0, 0, 0, 0, 0};
@@ -34,6 +34,7 @@ FILE *fN;
 
 void iDraw()
 {
+	iClear();
 
 	if (gState == -1)
 	{
@@ -85,7 +86,7 @@ void iDraw()
 		{
 			mciSendString(TEXT("stop mp3"), NULL, 0, NULL);
 		}
-		iClear();
+		
 		iSetColor(30, 30, 30);
 		iFilledRectangle(0, 0, 1280, 720);
 		if (gLevel == 1)
@@ -375,7 +376,11 @@ void iDraw()
 			iSetColor(255, 255, 255);
 			iText(575, 500, "GAME PAUSED!", GLUT_BITMAP_TIMES_ROMAN_24);
 		}
+	}else if (gState == 1)
+	{
+		iShowBMP(0, 0, Exit);
 	}
+	
 	// File Handeling
 	// if (game_over == 1)
 	// {
@@ -785,7 +790,23 @@ void iMouse(int button, int state, int mx, int my)
 			}
 			if (mx >= 250 && mx <= 385 && my >= 130 && my <= 175)
 			{
+				gState = 1;
+				
+			}
+			if(mx >= 40 && mx <= 160 && my >= 130 && my <= 175)
+			{
+				gState =2;
+			}
+		}
+		else if (gState == 1)
+		{
+			if (mx >= 708 && mx <= 830 && my >= 250 && my <= 290)
+			{
 				exit(0);
+			}
+			else if (mx >= 470 && mx <= 590 && my >= 250 && my <= 290)
+			{
+				gState = -1;
 			}
 		}
 	}
@@ -849,6 +870,9 @@ void iSpecialKeyboard(unsigned char key)
 	//place your codes for other keys here
 }
 
+// void playSound(){
+// 	PlaySound(TEXT("music//music.wav"), NULL, SND_ASYNC|SND_NOSTOP);
+// }
 int main()
 {
 
@@ -932,3 +956,4 @@ int main()
 
 	return 0;
 }
+
