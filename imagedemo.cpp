@@ -29,7 +29,7 @@ int score_number = 0;
 int file_output_length = 1;
 char players_name[100][999];
 int *score_point;
-int high_score, score_genarated = 0;
+int high_score;
 // int score_point[9999];
 FILE *fW;
 FILE *fR;
@@ -421,7 +421,6 @@ void iDraw()
 	else if (gState == 4)
 	{
 		iShowBMP(0, 0, SCORE);
-
 		int y_down = 450;
 		for (int i = 0; i < file_output_length / 2; i++)
 		{
@@ -453,6 +452,7 @@ void game_over_func()
 }
 void get_high_score()
 {
+	fR = fopen("GGSNAKE_SCORES.txt", "r");
 	char chk_file_line;
 	for (chk_file_line = getc(fN); chk_file_line != EOF; chk_file_line = getc(fN))
 		if (chk_file_line == '\n')
@@ -463,7 +463,7 @@ void get_high_score()
 	for (int i = 0; i < file_output_length; i++)
 	{
 		fscanf(fR, "%s%d", &players_name[i], &score_point[i]);
-		// printf("%s\n", players_name[i]);
+		printf("%d\n", score_point[i]);
 	}
 	high_score = score_point[0];
 	for (int i = 1; i < file_output_length / 2; i++)
@@ -855,8 +855,8 @@ void iMouse(int button, int state, int mx, int my)
 			}
 			if (mx >= 125 && mx <= 300 && my >= 325 && my <= 375)
 			{
+				get_high_score();
 				gState = 4;
-				score_genarated = 0;
 			}
 		}
 		else if (gState == 1)
