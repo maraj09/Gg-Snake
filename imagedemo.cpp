@@ -6,8 +6,8 @@ int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_
 int snake_width = 20, snake_height = 20;
 int x[2000], y[2000], d = 1, length = 50, dir = 1, p_d = 0;
 int snake = 12, game_over = 0;
-int rx = 320, ry = 320, f = 0;
-char t_score[50], score[5];
+int rx = 320, ry = 320;
+char t_score[50], score[5], highScore[5];
 
 int obs_1_x[100], obs_1_y[100], obs_rendered = 0;
 
@@ -20,6 +20,17 @@ int music_fix[] = {0, 0, 0, 0, 0};
 int button_hover[] = {0, 0, 0, 0, 0};
 
 int check_hit_times = (gLevel > 2) ? 40 : 36;
+
+char name[100] = "Rashid\n";
+int score_number = 0;
+int file_output_length = 1;
+char players_name[20];
+int *score_point;
+int high_score;
+// int score_point[9999];
+FILE *fW;
+FILE *fR;
+FILE *fN;
 
 void iDraw()
 {
@@ -221,11 +232,21 @@ void iDraw()
 		iText(1125, 510, "LEVEL 1", GLUT_BITMAP_HELVETICA_18);
 		iSetColor(255, 255, 0);
 		iText(1075, 450, "Your Current Score", GLUT_BITMAP_9_BY_15);
-		sprintf(score, "%d", f);
+		sprintf(score, "%d", score_number);
 		iText(1150, 425, score, GLUT_BITMAP_9_BY_15);
 		iSetColor(0, 255, 0);
 		iText(1100, 350, "Highest Score", GLUT_BITMAP_9_BY_15);
-		iText(1150, 325, score, GLUT_BITMAP_9_BY_15);
+		if (score_number > high_score)
+		{
+			sprintf(highScore, "%d", score_number);
+		}
+		else
+		{
+			sprintf(highScore, "%d", high_score);
+		}
+
+		iText(1150, 325, highScore, GLUT_BITMAP_9_BY_15);
+
 		//////////////////////////////////////////////////////////////
 		// FOR SNAKE MOVEMENT-Start
 		//////////////////////////////////////////////////////////////
@@ -318,7 +339,7 @@ void iDraw()
 		{
 
 			length += 5;
-			f = f + 1;
+			score_number = score_number + 2;
 			PlaySound(TEXT("music//food.wav"), NULL, SND_ASYNC);
 			rx = (rand() % ((ground_width_end - 30) - ground_width_start)) + ground_width_start;
 			ry = (rand() % ((ground_height_end - 30) - ground_height_start)) + ground_height_start;
@@ -335,7 +356,7 @@ void iDraw()
 		//////////////////////////////////////////////////////////////
 		// FOR Fruit-End
 		//////////////////////////////////////////////////////////////
-		sprintf(t_score, "Your Score is: %d", f);
+		sprintf(t_score, "Your Score is: %d", score_number);
 		//////////////////////////////////////////////////////////////
 		// Game Over-Start
 		//////////////////////////////////////////////////////////////
@@ -355,6 +376,13 @@ void iDraw()
 			iText(575, 500, "GAME PAUSED!", GLUT_BITMAP_TIMES_ROMAN_24);
 		}
 	}
+	// File Handeling
+	// if (game_over == 1)
+	// {
+	// 	fputs(name, fW);
+	// 	fprintf(fW, "%d\n", score_number);
+	// 	fclose(fW);
+	// }
 }
 
 void game_over_func()
@@ -362,8 +390,32 @@ void game_over_func()
 	game_over = 1;
 	iPauseTimer(0);
 	PlaySound(TEXT("music//gameover.wav"), NULL, SND_SYNC);
+	fputs(name, fW);
+	fprintf(fW, "%d\n", score_number);
+	fclose(fW);
 }
+void get_high_score()
+{
+	char chk_file_line;
+	for (chk_file_line = getc(fN); chk_file_line != EOF; chk_file_line = getc(fN))
+		if (chk_file_line == '\n')
+			file_output_length = file_output_length + 1;
 
+	score_point = (int *)malloc(file_output_length * sizeof(int));
+
+	for (int i = 0; i < file_output_length; i++)
+	{
+		fscanf(fR, "%s%d", &players_name, &score_point[i]);
+	}
+	high_score = score_point[0];
+	for (int i = 1; i < file_output_length / 2; i++)
+	{
+		if (high_score < score_point[i])
+		{
+			high_score = score_point[i];
+		}
+	}
+}
 void snake_movement()
 {
 	if (game_over == 0 && gState == 0)
@@ -544,9 +596,7 @@ void snake_movement()
 		{
 			if (x[0] == x[i] && y[0] == y[i])
 			{
-				iPauseTimer(0);
-				PlaySound(TEXT("music//gameover.wav"), NULL, SND_SYNC);
-				game_over = 1;
+				game_over_func();
 				break;
 			}
 		}
@@ -556,9 +606,7 @@ void snake_movement()
 			{
 				if (x[0] + snake_width >= obs_1_x[i] && x[0] <= obs_1_x[i] + 30 && y[0] + snake_width >= obs_1_y[i] && y[0] <= obs_1_y[i] + 30)
 				{
-					iPauseTimer(0);
-					PlaySound(TEXT("music//gameover.wav"), NULL, SND_SYNC);
-					game_over = 1;
+					game_over_func();
 					break;
 				}
 			}
@@ -720,10 +768,12 @@ void iMouse(int button, int state, int mx, int my)
 					length = 10;
 					x[0] = 300;
 					y[0] = 300;
-					f = 0;
+					score_number = 0;
 					d = 1;
 					dir = 1;
 					p_d = 1;
+					fW = fopen("GGSNAKE_SCORES.txt", "a");
+					get_high_score();
 				}
 			}
 		}
@@ -798,11 +848,10 @@ void iSpecialKeyboard(unsigned char key)
 
 	//place your codes for other keys here
 }
-// void playSound(){
-// 	PlaySound(TEXT("music//music.wav"), NULL, SND_ASYNC|SND_NOSTOP);
-// }
+
 int main()
 {
+
 	//place your own initialization codes here.
 	iSetTimer(50, snake_movement);
 
@@ -870,6 +919,15 @@ int main()
 	obs_1_x[0] = 370;
 	obs_1_y[0] = 550;
 
+	fW = fopen("GGSNAKE_SCORES.txt", "a");
+	fR = fopen("GGSNAKE_SCORES.txt", "r");
+	fN = fopen("GGSNAKE_SCORES.txt", "r");
+	if (fW == NULL || fR == NULL)
+	{
+		fW = fopen("GGSNAKE_SCORES.txt", "w");
+	}
+	
+	get_high_score();
 	iStart(); // it will start drawing
 
 	return 0;
