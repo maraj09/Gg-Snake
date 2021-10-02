@@ -27,9 +27,9 @@ int check_hit_times = (gLevel > 2) ? 40 : 36;
 char name[100];
 int score_number = 0;
 int file_output_length = 1;
-char players_name[20];
+char players_name[100][999];
 int *score_point;
-int high_score;
+int high_score, score_genarated = 0;
 // int score_point[9999];
 FILE *fW;
 FILE *fR;
@@ -243,7 +243,7 @@ void iDraw()
 		iSetColor(255, 255, 0);
 		iText(1075, 400, "Your Current Score", GLUT_BITMAP_9_BY_15);
 		sprintf(score, "%d", score_number);
-		iText(1150,  375, score, GLUT_BITMAP_9_BY_15);
+		iText(1150, 375, score, GLUT_BITMAP_9_BY_15);
 		iSetColor(0, 255, 0);
 		iText(1100, 300, "Highest Score", GLUT_BITMAP_9_BY_15);
 		if (score_number > high_score)
@@ -385,7 +385,8 @@ void iDraw()
 			iSetColor(255, 255, 255);
 			iText(575, 500, "GAME PAUSED!", GLUT_BITMAP_TIMES_ROMAN_24);
 		}
-	}else if (gState == 1)
+	}
+	else if (gState == 1)
 	{
 		iShowBMP(0, 0, Exit);
 	}
@@ -420,8 +421,18 @@ void iDraw()
 	else if (gState == 4)
 	{
 		iShowBMP(0, 0, SCORE);
+
+		int y_down = 450;
+		for (int i = 0; i < file_output_length / 2; i++)
+		{
+			char high_score_text[100];
+			sprintf(high_score_text, "%d.  %s  -  %d", i+1, players_name[i], score_point[i]);
+			iSetColor(255, 255, 255);
+			iText(400, y_down, high_score_text, GLUT_BITMAP_TIMES_ROMAN_24);
+			y_down -= 30;
+		}
 	}
-	
+
 	// File Handeling
 	// if (game_over == 1)
 	// {
@@ -451,7 +462,8 @@ void get_high_score()
 
 	for (int i = 0; i < file_output_length; i++)
 	{
-		fscanf(fR, "%s%d", &players_name, &score_point[i]);
+		fscanf(fR, "%s%d", &players_name[i], &score_point[i]);
+		// printf("%s\n", players_name[i]);
 	}
 	high_score = score_point[0];
 	for (int i = 1; i < file_output_length / 2; i++)
@@ -837,13 +849,14 @@ void iMouse(int button, int state, int mx, int my)
 			{
 				gState = 2;
 			}
-			if(mx >= 125 && mx <= 300 && my >= 425 && my <= 475)
+			if (mx >= 125 && mx <= 300 && my >= 425 && my <= 475)
 			{
-				gState =3;
+				gState = 3;
 			}
-			if(mx >= 125 && mx <= 300 && my >= 325 && my <= 375)
+			if (mx >= 125 && mx <= 300 && my >= 325 && my <= 375)
 			{
-				gState =4;
+				gState = 4;
+				score_genarated = 0;
 			}
 		}
 		else if (gState == 1)
@@ -908,7 +921,6 @@ void iMouse(int button, int state, int mx, int my)
 				gState = -1;
 			}
 		}
-		
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
 	{
