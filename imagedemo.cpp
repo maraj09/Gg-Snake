@@ -15,7 +15,7 @@ int playbutton_hover, learnbutton_hover, scorebutton_hover, creditbutton_hover, 
 int playbutton, learnbutton, scorebutton, creditbutton, exitbutton, play_after;
 char homemenu[25] = "images\\gg poster.bmp";
 char Exit[30] = "images\\exit screen01.bmp";
-char CREDIT[30] = "images\\creditbg01.bmp";
+char CREDIT[30] = "images\\creditbg02.bmp";
 char LEARN[30] = "images\\learnpage02.bmp";
 char SCORE[30] = "images\\highscorebg02.bmp";
 int gState = -1, gLevel = 3;
