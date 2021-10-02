@@ -15,6 +15,7 @@ int playbutton_hover, learnbutton_hover, scorebutton_hover, creditbutton_hover, 
 int playbutton, learnbutton, scorebutton, creditbutton, exitbutton;
 char homemenu[25] = "images\\gg poster.bmp";
 char Exit[30] = "images\\exit screen01.bmp";
+char CREDIT[30] = "images\\creditbg01.bmp";
 int gState = -1, gLevel = 3;
 int music_fix[] = {0, 0, 0, 0, 0};
 int button_hover[] = {0, 0, 0, 0, 0};
@@ -379,6 +380,10 @@ void iDraw()
 	}else if (gState == 1)
 	{
 		iShowBMP(0, 0, Exit);
+	}
+	else if (gState == 2)
+	{
+		iShowBMP(0, 0, CREDIT);
 	}
 	
 	// File Handeling
