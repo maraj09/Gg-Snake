@@ -2,30 +2,28 @@
 
 int ground_width = 800, ground_height = 600, ground_width_start = 240, ground_height_start = 60, ground_width_end = ground_width + ground_width_start, ground_height_end = ground_height + ground_height_start;
 int ground_img, side_logo, sound_on, sound_off, toogle_music = 1, reset_img, toogle_pause = 0, pause_btn, play_btn, back_btn, exit_btn;
-int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail, fruit;
+int snake_head_bottom, snake_head_top, snake_head_left, snake_head_right, snake_body_x, snake_body_y, snake_tail, fruit, hit;
 int snake_width = 20, snake_height = 20;
 int x[2000], y[2000], d = 1, length = 50, dir = 1, p_d = 0;
 int snake = 12, game_over = 0;
 int rx = 320, ry = 320;
 char t_score[50], score[5], highScore[5];
 
-int obs_1_x[100], obs_1_y[100], obs_rendered = 0;
+int obs_1_x[100], obs_1_y[100];
 
 int playbutton_hover, learnbutton_hover, scorebutton_hover, creditbutton_hover, exitbutton_hover;
-int playbutton, learnbutton, scorebutton, creditbutton, exitbutton, play_after;
+int playbutton, learnbutton, scorebutton, creditbutton, exitbutton, play_after, play_after_1, play_after_2, play_after_3, play_after_hover[3] = {0, 0, 0}, play_after_musics[3] = {0, 0, 0};
 char homemenu[25] = "images\\gg poster.bmp";
 char Exit[30] = "images\\exit screen01.bmp";
 char CREDIT[30] = "images\\creditbg02.bmp";
 char LEARN[30] = "images\\learnpage02.bmp";
 char SCORE[30] = "images\\highscorebg02.bmp";
-int gState = -1, gLevel = 3;
+int gState = -1, gLevel, check_hit_times;
 int music_fix[] = {0, 0, 0, 0, 0};
 int button_hover[] = {0, 0, 0, 0, 0};
 
-int check_hit_times = (gLevel > 2) ? 40 : 36;
-
 char name[100];
-int score_number = 0;
+int score_number = 0, level_wise_add;
 int file_output_length = 1;
 char players_name[100][999];
 int *score_point;
@@ -41,7 +39,6 @@ char str_input_name[100];
 void iDraw()
 {
 	iClear();
-
 	if (gState == -1)
 	{
 		iShowBMP(0, 0, homemenu);
@@ -78,7 +75,8 @@ void iDraw()
 	}
 	else if (gState == 0)
 	{
-
+		check_hit_times = (gLevel > 2) ? 40 : 36;
+		level_wise_add = (gLevel == 1) ? 2 : (gLevel == 2) ? 3 : 5;
 		if (toogle_music == 1 && toogle_pause == 0)
 		{
 
@@ -349,7 +347,7 @@ void iDraw()
 		{
 
 			length += 5;
-			score_number = score_number + 2;
+			score_number = score_number + level_wise_add;
 			PlaySound(TEXT("music//food.wav"), NULL, SND_ASYNC);
 			rx = (rand() % ((ground_width_end - 30) - ground_width_start)) + ground_width_start;
 			ry = (rand() % ((ground_height_end - 30) - ground_height_start)) + ground_height_start;
@@ -376,7 +374,15 @@ void iDraw()
 			iFilledRectangle(385, 300, 500, 300);
 			iSetColor(255, 255, 255);
 			iText(575, 500, "GAME OVER!", GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(560, 470, "OPPS! You Eat YourSelf.", GLUT_BITMAP_9_BY_15);
+			if (hit == 0)
+			{
+				iText(560, 470, "OPPS! You Eat YourSelf.", GLUT_BITMAP_9_BY_15);
+			}
+			else
+			{
+				iText(560, 470, "OPPS! You Hit Objects.", GLUT_BITMAP_9_BY_15);
+			}
+
 			iText(575, 425, t_score, GLUT_BITMAP_HELVETICA_18);
 			iShowImage(615, 325, 60, 60, reset_img);
 		}
@@ -406,6 +412,19 @@ void iDraw()
 		}
 
 		iShowImage(0, 0, 1280, 720, play_after);
+		if (play_after_hover[0] == 1)
+		{
+			iShowImage(0, 0, 1280, 720, play_after_1);
+		}
+		else if (play_after_hover[1] == 1)
+		{
+			iShowImage(0, 0, 1280, 720, play_after_2);
+		}
+		else if (play_after_hover[2] == 1)
+		{
+			iShowImage(0, 0, 1280, 720, play_after_3);
+		}
+
 		iText(95, 390, "Click to enter name: ", GLUT_BITMAP_9_BY_15);
 		iRectangle(92, 305, 290, 53);
 		iSetColor(0, 255, 0);
@@ -425,20 +444,12 @@ void iDraw()
 		for (int i = 0; i < file_output_length / 2; i++)
 		{
 			char high_score_text[100];
-			sprintf(high_score_text, "%d.  %s  -  %d", i+1, players_name[i], score_point[i]);
+			sprintf(high_score_text, "%d.  %s  -  %d", i + 1, players_name[i], score_point[i]);
 			iSetColor(255, 255, 255);
 			iText(400, y_down, high_score_text, GLUT_BITMAP_TIMES_ROMAN_24);
 			y_down -= 30;
 		}
 	}
-
-	// File Handeling
-	// if (game_over == 1)
-	// {
-	// 	fputs(name, fW);
-	// 	fprintf(fW, "%d\n", score_number);
-	// 	fclose(fW);
-	// }
 }
 
 void game_over_func()
@@ -463,7 +474,7 @@ void get_high_score()
 	for (int i = 0; i < file_output_length; i++)
 	{
 		fscanf(fR, "%s%d", &players_name[i], &score_point[i]);
-		printf("%d\n", score_point[i]);
+		// printf("%d\n", score_point[i]);
 	}
 	high_score = score_point[0];
 	for (int i = 1; i < file_output_length / 2; i++)
@@ -655,6 +666,7 @@ void snake_movement()
 			if (x[0] == x[i] && y[0] == y[i])
 			{
 				game_over_func();
+				hit = 0;
 				break;
 			}
 		}
@@ -664,6 +676,7 @@ void snake_movement()
 			{
 				if (x[0] + snake_width >= obs_1_x[i] && x[0] <= obs_1_x[i] + 30 && y[0] + snake_width >= obs_1_y[i] && y[0] <= obs_1_y[i] + 30)
 				{
+					hit = 1;
 					game_over_func();
 					break;
 				}
@@ -766,6 +779,51 @@ void iPassiveMouse(int mx, int my)
 			button_hover[4] = 0;
 		}
 	}
+	else if (gState == -2)
+	{
+		if (mx >= 485 && mx <= 720 && my >= 40 && my <= 490)
+		{
+			if (play_after_musics[0] == 0)
+			{
+				play_after_hover[0] = 1;
+				PlaySound(TEXT("music\\sd.wav"), NULL, SND_ASYNC);
+				play_after_musics[0] = 1;
+			}
+		}
+		else
+		{
+			play_after_hover[0] = 0;
+			play_after_musics[0] = 0;
+		}
+		if (mx >= 755 && mx <= 990 && my >= 40 && my <= 490)
+		{
+			if (play_after_musics[1] == 0)
+			{
+				play_after_hover[1] = 1;
+				PlaySound(TEXT("music\\sd.wav"), NULL, SND_ASYNC);
+				play_after_musics[1] = 1;
+			}
+		}
+		else
+		{
+			play_after_hover[1] = 0;
+			play_after_musics[1] = 0;
+		}
+		if (mx >= 1025 && mx <= 1258 && my >= 40 && my <= 490)
+		{
+			if (play_after_musics[2] == 0)
+			{
+				play_after_hover[2] = 1;
+				PlaySound(TEXT("music\\sd.wav"), NULL, SND_ASYNC);
+				play_after_musics[2] = 1;
+			}
+		}
+		else
+		{
+			play_after_hover[2] = 0;
+			play_after_musics[2] = 0;
+		}
+	}
 }
 
 /*
@@ -799,6 +857,7 @@ void iMouse(int button, int state, int mx, int my)
 					PlaySound(TEXT("music//gameover.wav"), NULL, SND_ASYNC);
 					toogle_pause = 1;
 					iPauseTimer(0);
+					
 				}
 				else
 				{
@@ -815,6 +874,7 @@ void iMouse(int button, int state, int mx, int my)
 				gState = -1;
 				toogle_pause = 1;
 				iPauseTimer(0);
+				mciSendString(TEXT("pause  mp3"), NULL, 0, NULL);
 			}
 			if (mx >= 615 && mx <= 675 && my >= 325 && my <= 385)
 			{
@@ -872,6 +932,7 @@ void iMouse(int button, int state, int mx, int my)
 		}
 		else if (gState == -2)
 		{
+			// gState = 0;
 			if (mx >= 35 && mx <= 75 && my >= 35 && my <= 75)
 			{
 				gState = -1;
@@ -888,7 +949,6 @@ void iMouse(int button, int state, int mx, int my)
 				}
 				strcpy(name, str_input_name);
 				name_mode = 0;
-				gState = 0;
 			}
 			if (mx >= 190 && mx <= 250 && my >= 225 && my <= 285)
 			{
@@ -898,6 +958,26 @@ void iMouse(int button, int state, int mx, int my)
 					str_input_name[i] = ' ';
 				}
 				len = 0;
+			}
+
+			if (mx >= 485 && mx <= 720 && my >= 40 && my <= 490)
+			{
+
+				gLevel = 1;
+				gState = 0;
+			}
+
+			if (mx >= 755 && mx <= 990 && my >= 40 && my <= 490)
+			{
+
+				gLevel = 2;
+				gState = 0;
+			}
+
+			if (mx >= 1025 && mx <= 1258 && my >= 40 && my <= 490)
+			{
+				gLevel = 3;
+				gState = 0;
 			}
 		}
 		else if (gState == 2)
@@ -1031,6 +1111,9 @@ int main()
 	back_btn = iLoadImage("images\\previous.png");
 	exit_btn = iLoadImage("images\\exit.png");
 	play_after = iLoadImage("images\\afterplay.png");
+	play_after_1 = iLoadImage("images\\box1blur.png");
+	play_after_2 = iLoadImage("images\\box2blur.png");
+	play_after_3 = iLoadImage("images\\box3blur.png");
 	// In Menu
 	playbutton_hover = iLoadImage("images\\Goldenplay.png");
 	scorebutton_hover = iLoadImage("images\\scores_g.png");
