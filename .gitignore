@@ -3,8 +3,11 @@
 
 # But not these files...
 !.gitignore
-!imagedemo.cpp
+!GgSnake.cpp
 !iGraphics.h
 !images
 !music
 !Build
+!glut.h
+!glaux.h
+!stb_image.h
